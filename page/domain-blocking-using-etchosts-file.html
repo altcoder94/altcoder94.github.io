@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+  <head>
+    <meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+<link rel="stylesheet" href="/_assets/main.css" />
+
+    <title>Domain blocking using /etc/hosts file - Random Stuffs.</title>
+  </head>
+  <body>
+    <div class="main">
+      <nav class="navigation">
+        <a href="/">Random Stuffs.</a>
+      </nav>
+      <article>
+        <header>
+          <h1 class="article-title">Domain blocking using /etc/hosts file</h1>
+          <div class="article-info">
+            <div>
+              <span
+                >Created At：<time datetime="1638601445379"
+                  >2021-12-04 12:34</time
+                ></span
+              >
+              <span
+                >Updated At：<time datetime="1638605855937"
+                  >2021-12-04 13:47</time
+                ></span
+              >
+            </div>
+            
+          </div>
+        </header>
+        <div class="article-content markdown-body"><h3 id="objective">Objective</h3>
+<p>To block domains using the /etc/hosts file.</p>
+<hr />
+<h3 id="how">How</h3>
+<p>The <code>/etc/hosts</code> file contains the IP host names and addresses for the local host and other hosts in the internet network<sup class="footnote-ref"><a href="#fn1" id="fnref1">[1]</a></sup>.</p>
+<p>This works by specifying 0.0.0.0 / 0.0.0.1 as IP address for the hostname explicitly in the /etc/hosts file.</p>
+<p>So the resolver will use IP address specified in this file instead.</p>
+<hr />
+<h3 id="steps">Steps</h3>
+<ol>
+<li>
+<p>Open terminal and run the following command:
+<img src="/_resources/3e3ff3eaf02c47899b2db9d732072e3a.png" />
+<img src="/_resources/24b9db5e9f3947cb9bb07001fb16ce39.png" /></p>
+</li>
+<li>
+<p>Give 0.0.0.0/0.0.0.1 as IP address for domain that you want to block.
+<img src="/_resources/dc9e21887ae9424b8c464de12b9c3c9a.png" /></p>
+</li>
+<li>
+<p>Verify using dig:
+<img src="/_resources/8731ad5bf3234d878c6aa7e259871999.png" /></p>
+</li>
+<li>
+<p>Restart browser if domain remains unblocked.</p>
+</li>
+</ol>
+<hr class="footnotes-sep" />
+<section class="footnotes">
+<ol class="footnotes-list">
+<li id="fn1" class="footnote-item"><p><a title="https://www.ibm.com/docs/en/aix/7.2?topic=formats-hosts-file-format-tcpip" href="https://www.ibm.com/docs/en/aix/7.2?topic=formats-hosts-file-format-tcpip">https://www.ibm.com/docs/en/aix/7.2?topic=formats-hosts-file-format-tcpip</a> <a href="#fnref1" class="footnote-backref">↩︎</a></p>
+</li>
+</ol>
+</section>
+</div>
+      </article>
+    </div>
+  </body>
+</html>

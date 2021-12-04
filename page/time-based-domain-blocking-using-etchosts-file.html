@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+  <head>
+    <meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+<link rel="stylesheet" href="/_assets/main.css" />
+
+    <title>Time based domain blocking using /etc/hosts file - Random Stuffs.</title>
+  <link rel="stylesheet" href="/_markdown_plugin_assets/highlight.js/atom-one-light.css" /></head>
+  <body>
+    <div class="main">
+      <nav class="navigation">
+        <a href="/">Random Stuffs.</a>
+      </nav>
+      <article>
+        <header>
+          <h1 class="article-title">Time based domain blocking using /etc/hosts file</h1>
+          <div class="article-info">
+            <div>
+              <span
+                >Created At：<time datetime="1638605141784"
+                  >2021-12-04 13:35</time
+                ></span
+              >
+              <span
+                >Updated At：<time datetime="1638615472727"
+                  >2021-12-04 16:27</time
+                ></span
+              >
+            </div>
+            
+          </div>
+        </header>
+        <div class="article-content markdown-body"><h3 id="objective">Objective</h3>
+<p>To block domains based on time using /etc/hosts file.</p>
+<hr />
+<h3 id="how">How</h3>
+<p>This involves 3 tasks:</p>
+<ol>
+<li>Create 2 <code>/etc/hosts</code> files. One of them should contain the domains to be blocked. The other is the default <code>/etc/hosts</code> file with no domains blocked.</li>
+<li>Let us say, domains need to be blocke from Time A to Time B. Use cron to schedule a task to copy the <code>domain-blocking /etc/hosts</code> file to <code>/etc/hosts</code> file at time A. At Time B, to undo this, copy the <code>default domain non-blocking /etc/hosts</code> file to <code>/etc/hosts</code> file.</li>
+<li>The cron will not be able to schedule the process if the machine was shut down at the time. For this, we create a script and run it as a service every time after the system boots.</li>
+</ol>
+<hr />
+<h3 id="steps">Steps</h3>
+<ol>
+<li>Copy <code>/etc/hosts</code> to <code>/etc/hosts_playtime</code> and <code>/etc/hosts_worktime</code>. <code>/etc/hosts_worktime</code> will be the domain blocking <code>/etc/hosts</code> file. The other will serve as the default.
+<img src="/_resources/8cd0c240bf12418091aaa630179e8dc8.png" /></li>
+<li>Add domains to be blocked to <code>/etc/hosts_worktime</code> file.
+<img src="/_resources/3ef63272f20946fe93f117ffb2b43dbb.png" />
+<img src="/_resources/ce3825279d274831a9df3a34f3a79140.png" /></li>
+<li>Edit crontab to schedule copying of <code>/etc/hosts_worktime</code> to <code>/etc/hosts</code>  at 6:00 AM and <code>/etc/hosts_playtime</code> to <code>/etc/hosts</code> at 11:00 PM.
+<img src="/_resources/7042746d8cad486bba878bed682bf021.png" />
+<img src="/_resources/b0bb856f6f4e4fb181a72aad5b869715.png" /></li>
+<li>Create a bash script <code>/usr/local/bin/hosts_modify.sh</code> . The script copies <code>/etc/hosts_worktime</code> to /etc/hosts if the current time is between 6 AM and 11 PM.
+<img src="/_resources/0cb897ebb2c94bb48b8632c4857e8b6f.png" />
+Code<div><pre class="hljs"><code><span class="hljs-meta">#!/bin/bash</span>
+
+current_hour=$(date +<span class="hljs-string">'%H'</span>)
+
+<span class="hljs-keyword">if</span> [ <span class="hljs-variable">$current_hour</span> -gt 6 -a <span class="hljs-variable">$current_hour</span> -lt 23 ]
+<span class="hljs-keyword">then</span>
+    sudo cp /etc/hosts_worktime /etc/hosts
+<span class="hljs-keyword">else</span>
+    <span class="hljs-built_in">echo</span> cp /etc/hosts_playtime /etc/hosts
+<span class="hljs-keyword">fi</span></code></pre></div>
+</li>
+<li>Create <code>/etc/systemd/system/hosts_modify.service</code> to run the <code>hosts_modify.sh</code> script.
+<img src="/_resources/86dbcc9ed66b4141b51fa4a5354cef5e.png" />
+<img src="/_resources/a1448572e70548b2a210d573f70d2148.png" /></li>
+<li>Start the service and enable it to run it at boot.
+<img src="/_resources/737adc681dbc4c688df5d3e9bfeefabe.png" /></li>
+</ol>
+</div>
+      </article>
+    </div>
+  </body>
+</html>
